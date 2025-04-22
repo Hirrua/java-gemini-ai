@@ -1,8 +1,8 @@
 package com.hirrua.CvAi.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hirrua.CvAi.dto.AnaliseResponse;
+import com.hirrua.CvAi.util.JsonParser;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -12,15 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/gemini")
 public class GeminiController {
 
     private final VertexAiGeminiChatModel chatModel;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GeminiController(VertexAiGeminiChatModel chatModel) {
         this.chatModel = chatModel;
@@ -34,7 +31,7 @@ public class GeminiController {
     }
 
     @PostMapping(value = "/analisar", consumes = "multipart/form-data")
-    public String analyzeCandidate(
+    public AnaliseResponse analyzeCandidate(
             @RequestPart("description") String description,
             @RequestPart("file") MultipartFile file) throws IOException {
 
@@ -68,7 +65,7 @@ public class GeminiController {
         """, description, resumeText);
 
         String geminiResponse = chatModel.call(new Prompt(promptText)).getResult().getOutput().getText();
-        return geminiResponse;
+        return JsonParser.parserJson(geminiResponse);
     }
 
     private String extractTextFromPdf(byte[] pdfBytes) throws IOException {
@@ -76,6 +73,4 @@ public class GeminiController {
             return new PDFTextStripper().getText(doc);
         }
     }
-
-
 }
