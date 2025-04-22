@@ -21,7 +21,8 @@ O body da requisição deve ser feita em **form-data**.
 
 ### Estrutura JSON
 
-```json{
+```json
+{
     "pontos_fortes": [
         "Experiência com Java e Spring Boot",
         "Conhecimento em bancos de dados relacionais (PostgreSQL, MySQL)",
@@ -57,4 +58,5 @@ O body da requisição deve ser feita em **form-data**.
         "Aprofundar a experiência com metodologias ágeis e serviços em nuvem",
         "Avaliar a capacidade de trabalhar em equipe e resolver problemas"
     ]
-}```
+}
+```
