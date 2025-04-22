@@ -1,6 +1,5 @@
 package com.hirrua.CvAi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hirrua.CvAi.dto.AnaliseResponse;
 import com.hirrua.CvAi.util.JsonParser;
 import org.apache.pdfbox.Loader;
