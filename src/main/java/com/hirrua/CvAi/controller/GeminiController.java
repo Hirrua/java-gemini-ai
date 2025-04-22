@@ -2,13 +2,11 @@ package com.hirrua.CvAi.controller;
 
 import com.hirrua.CvAi.dto.AnaliseResponse;
 import com.hirrua.CvAi.util.JsonParser;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.text.PDFTextStripper;
+import com.hirrua.CvAi.util.PdfParser;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
 
@@ -34,7 +32,7 @@ public class GeminiController {
             @RequestPart("description") String description,
             @RequestPart("file") MultipartFile file) throws IOException {
 
-        String resumeText = extractTextFromPdf(file.getBytes());
+        String resumeText = PdfParser.extractTextoFromPdf(file.getBytes());
 
         String promptText = String.format("""
         Faça uma análise detalhada do candidato para esta vaga. Retorne APENAS UM JSON válido SEM FORMATAÇÃO com:
@@ -65,11 +63,5 @@ public class GeminiController {
 
         String geminiResponse = chatModel.call(new Prompt(promptText)).getResult().getOutput().getText();
         return JsonParser.parserJson(geminiResponse);
-    }
-
-    private String extractTextFromPdf(byte[] pdfBytes) throws IOException {
-        try (PDDocument doc = Loader.loadPDF(pdfBytes)) {
-            return new PDFTextStripper().getText(doc);
-        }
     }
 }
